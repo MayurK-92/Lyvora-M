@@ -20,7 +20,7 @@ From there you can:
 - **Graph** — entities and relationships extracted from what you save
 - **Reports** — weekly recap in the app (email is optional; needs Resend)
 
-Also included: PWA share target, a bookmarklet and iOS shortcut from Settings, and a short first-run onboarding card.
+Also included: PWA install / share target from Settings, and a short first-run onboarding card.
 
 ## Stack
 
@@ -81,7 +81,7 @@ Google sign-in is wired in the UI. It stays disabled until you add a Google OAut
 
 ### Optional: weekly report email
 
-Leave these unset and reports still generate in `/report`. Set them to also send Monday email via [Resend](https://resend.com):
+Leave these unset and reports still generate in `/report`. Set them to also email each user on Monday at 08:00 in their timezone via [Resend](https://resend.com):
 
 ```bash
 RESEND_API_KEY=re_...

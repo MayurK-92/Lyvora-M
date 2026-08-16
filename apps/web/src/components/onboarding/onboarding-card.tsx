@@ -26,11 +26,11 @@ const STEPS = [
     icon: "touch_app" as const,
     body: (
       <>
-        Add the bookmarklet from{" "}
+        Install the app from{" "}
         <Link href="/settings" className="text-primary underline-offset-4 hover:underline">
           Settings
         </Link>{" "}
-        to save from other tabs.
+        to share links from other apps.
       </>
     ),
   },

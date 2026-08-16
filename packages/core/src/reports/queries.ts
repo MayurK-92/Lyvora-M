@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { createServiceDbClient } from "../db/client";
-import { weeklyReports } from "../db/schema";
+import { profiles, weeklyReports } from "../db/schema";
 import type { WeeklyReportPayload, WeeklyReportResult } from "./types";
 
 function toResult(row: typeof weeklyReports.$inferSelect): WeeklyReportResult {
@@ -12,6 +12,15 @@ function toResult(row: typeof weeklyReports.$inferSelect): WeeklyReportResult {
     narrative: row.narrative,
     createdAt: row.createdAt,
   };
+}
+
+export async function listDigestRecipients(): Promise<
+  Array<{ id: string; timezone: string }>
+> {
+  const db = createServiceDbClient();
+  return db
+    .select({ id: profiles.id, timezone: profiles.timezone })
+    .from(profiles);
 }
 
 export async function getLatestWeeklyReport(

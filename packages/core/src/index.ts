@@ -49,4 +49,5 @@ export * from "./reports/generate";
 export * from "./reports/email";
 export * from "./reports/send-for-user";
 export * from "./reports/queries";
+export * from "./reports/schedule";
 export * from "./reports/eval-seed";

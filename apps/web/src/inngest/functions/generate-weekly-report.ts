@@ -1,6 +1,7 @@
 import {
   generateWeeklyReport,
-  listProfileIds,
+  isLocalMondayDigestHour,
+  listDigestRecipients,
   sendWeeklyReportForUser,
 } from "@lyvora/core";
 import { inngest } from "@/inngest/client";
@@ -9,15 +10,18 @@ export const generateWeeklyReportJob = inngest.createFunction(
   {
     id: "generate-weekly-report",
     retries: 2,
-    triggers: [{ cron: "TZ=UTC 0 8 * * 1" }],
+    // Hourly UTC; each user is emailed only in their Monday 08:00 local hour.
+    triggers: [{ cron: "TZ=UTC 0 * * * *" }],
   },
   async ({ step }) => {
-    const userIds = await step.run("list-users", () => listProfileIds());
+    const recipients = await step.run("list-users", () => listDigestRecipients());
+    const due = recipients.filter((row) => isLocalMondayDigestHour(row.timezone));
+
     let generated = 0;
     let emailed = 0;
     let emailSkipped = 0;
 
-    for (const userId of userIds) {
+    for (const { id: userId } of due) {
       const report = await step.run(`report-${userId}`, () =>
         generateWeeklyReport(userId),
       );
@@ -34,6 +38,6 @@ export const generateWeeklyReportJob = inngest.createFunction(
       else emailed += 1;
     }
 
-    return { generated, emailed, emailSkipped };
+    return { considered: recipients.length, due: due.length, generated, emailed, emailSkipped };
   },
 );
