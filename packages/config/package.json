@@ -1,0 +1,15 @@
+{
+  "name": "@lyvora/config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint": "./eslint.js",
+    "./tailwind-theme.css": "./tailwind-theme.css"
+  },
+  "dependencies": {
+    "typescript-eslint": "8.65.0"
+  }
+}

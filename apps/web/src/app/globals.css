@@ -1,0 +1,389 @@
+@import "tailwindcss";
+@import "@lyvora/config/tailwind-theme.css";
+
+/* Scan UI package classes (dialogs, menus, etc.) that only appear in @lyvora/ui. */
+@source "../../../../packages/ui/src";
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    min-height: 100vh;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The design hides scrollbar chrome while keeping scrolling intact. */
+  * {
+    scrollbar-width: none;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/*
+ * Material Symbols Outlined. The Google stylesheet linked from the root layout
+ * ships this rule too; declaring it locally keeps icons from rendering as raw
+ * ligature text before that stylesheet resolves.
+ */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.material-symbols-outlined[data-filled="true"] {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes capture-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes capture-done {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 0%, transparent);
+  }
+  40% {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 24%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 0%, transparent);
+  }
+}
+
+/* chat_lyvora — indeterminate "Searching memory graph…" bar. */
+@keyframes progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* weekly_report_lyvora — scoped micro-animations. */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-page-enter {
+  animation: page-enter 280ms ease-out both;
+}
+
+@utility animate-capture-in {
+  animation: capture-in 420ms ease-out both;
+}
+
+@utility animate-capture-done {
+  animation: capture-done 700ms ease-out both;
+}
+
+@utility pulse-animation {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility animate-fade-in {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .print-hidden,
+  .print-screen-only {
+    display: none !important;
+  }
+
+  .print-only,
+  .report-print-sheet {
+    display: block !important;
+  }
+
+  /* Collapse app chrome spacing while exporting. */
+  .lg\:pl-72 {
+    padding-left: 0 !important;
+  }
+
+  main#main-content {
+    padding-top: 0 !important;
+    min-height: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Avoid animation wrappers affecting print layout. */
+  .animate-page-enter {
+    animation: none !important;
+  }
+}
+
+/* One-page digest: hidden on screen, only for print/PDF. */
+.print-only,
+.report-print-sheet {
+  display: none;
+}
+
+.report-print-sheet {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  color: #171717;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 11pt;
+  line-height: 1.35;
+}
+
+.report-print-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid #171717;
+  margin-bottom: 14px;
+}
+
+.report-print-brand {
+  margin: 0 0 2px;
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.report-print-header h1 {
+  margin: 0;
+  font-size: 20pt;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.report-print-meta {
+  margin: 4px 0 0;
+  font-size: 9.5pt;
+  color: #525252;
+}
+
+.report-print-align-end {
+  text-align: right;
+}
+
+.report-print-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.report-print-stats > div {
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.report-print-stat-label {
+  display: block;
+  font-size: 8.5pt;
+  color: #737373;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.report-print-stats strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 16pt;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.report-print-stat-note {
+  display: block;
+  margin-top: 2px;
+  font-size: 8.5pt;
+  color: #737373;
+}
+
+.report-print-block {
+  margin-bottom: 12px;
+}
+
+.report-print-block h2 {
+  margin: 0 0 6px;
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #404040;
+}
+
+.report-print-block p {
+  margin: 0;
+}
+
+.report-print-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.report-print-block ul,
+.report-print-block ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.report-print-block li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 10pt;
+}
+
+.report-print-block li span:last-child {
+  flex-shrink: 0;
+  color: #737373;
+  font-size: 9pt;
+}
+
+.report-print-tags {
+  font-size: 10pt;
+  color: #404040;
+}
+
+.report-print-empty {
+  font-size: 10pt;
+  color: #737373;
+}
+
+.report-print-focus {
+  padding-top: 8px;
+  border-top: 1px solid #d4d4d4;
+}
+
+.report-print-footer {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid #d4d4d4;
+  font-size: 8.5pt;
+  color: #737373;
+}
+
+@media print {
+  .report-print-sheet {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

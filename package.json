@@ -1,0 +1,25 @@
+{
+  "name": "lyvora",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Lyvora - AI-powered personal memory platform.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "dev": "pnpm --filter @lyvora/web dev",
+    "inngest:dev": "pnpm dlx inngest-cli@latest dev -u http://localhost:3000/api/inngest",
+    "build": "pnpm --filter @lyvora/web build",
+    "start": "pnpm --filter @lyvora/web start",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "db:studio": "pnpm --filter @lyvora/core db:studio",
+    "supabase:start": "pnpm dlx supabase@2.111.0 start",
+    "supabase:stop": "pnpm dlx supabase@2.111.0 stop",
+    "supabase:gen-types": "pnpm dlx supabase@2.111.0 gen types typescript --local --schema public > packages/core/src/db/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
