@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { CAPTURES_BUCKET } from "@lyvora/core";
+import {
+  CAPTURES_BUCKET,
+  UnsafeUrlError,
+  assertPublicHttpUrl,
+} from "@lyvora/core";
 import { inngest } from "@/inngest/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ShareClient } from "./extract-shared";
@@ -59,6 +63,18 @@ export async function createUrlOrTextCapture(input: {
   client: ShareClient;
 }): Promise<SharedCaptureResult> {
   if (input.url) {
+    try {
+      await assertPublicHttpUrl(input.url);
+    } catch (error) {
+      return {
+        ok: false,
+        error:
+          error instanceof UnsafeUrlError
+            ? error.message
+            : "This URL isn't a public web page Lyvora can fetch.",
+        status: 400,
+      };
+    }
     return insertAndEnqueue({
       userId: input.userId,
       kind: "url",

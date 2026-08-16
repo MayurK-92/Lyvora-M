@@ -13,6 +13,7 @@ export * from "./storage/captures";
 export * from "./storage/detect";
 export * from "./pipeline/types";
 export * from "./pipeline/canonicalize";
+export * from "./pipeline/ssrf";
 export * from "./pipeline/youtube-url";
 export * from "./pipeline/instagram-url";
 export * from "./pipeline/extract-text";

@@ -1,4 +1,5 @@
 import type { CaptureSource, RawFetchResult, SourceAdapter } from "../types";
+import { UnsafeUrlError, fetchPublicHttp } from "../ssrf";
 
 const USER_AGENT =
   "Mozilla/5.0 (compatible; LyvoraBot/0.1; +https://lyvora.app) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -38,12 +39,11 @@ function extractMeta(html: string): {
 }
 
 async function fetchHtml(url: string): Promise<{ finalUrl: string; html: string }> {
-  const response = await fetch(url, {
+  const response = await fetchPublicHttp(url, {
     headers: {
       "User-Agent": USER_AGENT,
       Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
     },
-    redirect: "follow",
     signal: AbortSignal.timeout(20_000),
   });
   if (!response.ok) {
@@ -93,6 +93,7 @@ export const webAdapter: SourceAdapter = {
         heroImageUrl: meta.heroImageUrl,
       };
     } catch (primaryError) {
+      if (primaryError instanceof UnsafeUrlError) throw primaryError;
       // JS-heavy pages / bot blocks: fall back to Jina Reader (system_design.md §7).
       const text = await fetchViaJina(inputUrl);
       if (!text.trim()) {

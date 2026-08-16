@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { CaptureRequestSchema } from "@lyvora/core";
+import {
+  CaptureRequestSchema,
+  UnsafeUrlError,
+  assertPublicHttpUrl,
+} from "@lyvora/core";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { inngest } from "@/inngest/client";
 
@@ -66,6 +70,18 @@ export async function POST(request: Request) {
   }
 
   const payload = parsed.data;
+  if (payload.kind === "url") {
+    try {
+      await assertPublicHttpUrl(payload.input);
+    } catch (error) {
+      const message =
+        error instanceof UnsafeUrlError
+          ? error.message
+          : "This URL isn't a public web page Lyvora can fetch.";
+      return NextResponse.json({ error: message }, { status: 400 });
+    }
+  }
+
   const insertRow = {
     user_id: user.id,
     kind: payload.kind,

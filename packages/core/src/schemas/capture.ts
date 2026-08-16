@@ -9,7 +9,14 @@ const noteSchema = z.string().max(2000).optional();
 export const CaptureRequestSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("url"),
-    input: z.url(),
+    input: z.url().refine((value) => {
+      try {
+        const protocol = new URL(value).protocol;
+        return protocol === "http:" || protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "URL must be http or https"),
     note: noteSchema,
     client: clientSchema,
   }),

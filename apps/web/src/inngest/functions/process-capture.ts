@@ -1,4 +1,5 @@
 import {
+  assertPublicHttpUrl,
   canonicalizeUrl,
   chunkAndEmbed,
   extractText,
@@ -61,6 +62,7 @@ export const processCapture = inngest.createFunction(
         if (!capture.rawInput) {
           throw new Error("URL capture missing input");
         }
+        await assertPublicHttpUrl(capture.rawInput);
         const canonicalUrl = canonicalizeUrl(capture.rawInput);
         const urlHash = hashUrl(canonicalUrl);
         const draft: CaptureSource = {

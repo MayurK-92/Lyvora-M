@@ -9,6 +9,7 @@ import {
   extractInstagramShortcode,
   isInstagramUrl,
 } from "../instagram-url";
+import { fetchPublicHttp } from "../ssrf";
 
 /**
  * Instagram serves full OpenGraph tags (caption, creator, media) to link-preview
@@ -95,13 +96,12 @@ async function fetchReelPage(shortcode: string): Promise<ReelMeta> {
   let lastError: Error | null = null;
   for (const url of urls) {
     try {
-      const response = await fetch(url, {
+      const response = await fetchPublicHttp(url, {
         headers: {
           "User-Agent": CRAWLER_UA,
           Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
           "Accept-Language": "en-US,en;q=0.9",
         },
-        redirect: "follow",
         signal: AbortSignal.timeout(25_000),
       });
       if (!response.ok) {
@@ -125,7 +125,7 @@ async function downloadMedia(
   url: string,
   maxBytes: number,
 ): Promise<Uint8Array | null> {
-  const response = await fetch(url, {
+  const response = await fetchPublicHttp(url, {
     headers: { "User-Agent": CRAWLER_UA, Referer: "https://www.instagram.com/" },
     signal: AbortSignal.timeout(30_000),
   });
